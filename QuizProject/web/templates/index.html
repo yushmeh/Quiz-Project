@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выжить в Тайге — Симулятор Выживания</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Фоновый декоративный слой — звёздное небо/туман тайги -->
+    <div class="bg-layer"></div>
+    <div class="noise-overlay"></div>
+
+    <div class="app-wrapper">
+
+        <!-- ====== ШАПКА ====== -->
+        <header class="game-header">
+            <div class="header-emblem">🌲</div>
+            <div class="header-title-block">
+                <h1 class="game-title">ВЫЖИТЬ В ТАЙГЕ</h1>
+                <p class="game-subtitle">Симулятор выживания в дикой природе</p>
+            </div>
+            <div class="header-emblem">🐺</div>
+        </header>
+
+        <!-- ====== ОСНОВНАЯ ИГРОВАЯ ОБЛАСТЬ ====== -->
+        <main class="game-main">
+
+            <!-- ====== ПАНЕЛЬ ПОКАЗАТЕЛЕЙ ВЫЖИВАНИЯ ====== -->
+            <aside class="stats-panel">
+                <h2 class="stats-title">СОСТОЯНИЕ</h2>
+
+                <!-- Здоровье -->
+                <div class="stat-block">
+                    <div class="stat-header">
+                        <span class="stat-icon">❤️</span>
+                        <span class="stat-label">ЗДОРОВЬЕ</span>
+                        <span class="stat-value" id="health-value">80</span>
+                    </div>
+                    <div class="stat-bar-track" title="Здоровье">
+                        <div class="stat-bar health-bar" id="health-bar" style="width: 80%"></div>
+                    </div>
+                </div>
+
+                <!-- Тепло -->
+                <div class="stat-block">
+                    <div class="stat-header">
+                        <span class="stat-icon">🔥</span>
+                        <span class="stat-label">ТЕПЛО</span>
+                        <span class="stat-value" id="warmth-value">80</span>
+                    </div>
+                    <div class="stat-bar-track" title="Тепло">
+                        <div class="stat-bar warmth-bar" id="warmth-bar" style="width: 80%"></div>
+                    </div>
+                </div>
+
+                <!-- Сытость -->
+                <div class="stat-block">
+                    <div class="stat-header">
+                        <span class="stat-icon">🍗</span>
+                        <span class="stat-label">СЫТОСТЬ</span>
+                        <span class="stat-value" id="satiety-value">80</span>
+                    </div>
+                    <div class="stat-bar-track" title="Сытость">
+                        <div class="stat-bar satiety-bar" id="satiety-bar" style="width: 80%"></div>
+                    </div>
+                </div>
+
+                <!-- Прогресс прохождения -->
+                <div class="progress-block">
+                    <div class="stat-header">
+                        <span class="stat-icon">📋</span>
+                        <span class="stat-label">ПРОГРЕСС</span>
+                        <span class="stat-value" id="progress-text">0/0</span>
+                    </div>
+                    <div class="stat-bar-track">
+                        <div class="stat-bar progress-bar" id="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Категория вопроса -->
+                <div class="category-badge" id="category-badge">
+                    <span id="category-icon">🌲</span>
+                    <span id="category-text">Тайга</span>
+                </div>
+            </aside>
+
+            <!-- ====== ЦЕНТРАЛЬНАЯ КАРТОЧКА ВОПРОСА ====== -->
+            <section class="question-section" id="question-section">
+
+                <!-- Экран приветствия (показывается до начала игры) -->
+                <div class="welcome-screen" id="welcome-screen">
+                    <div class="welcome-emblem">🌲🏕️🌲</div>
+                    <h2 class="welcome-title">Добро пожаловать в тайгу</h2>
+                    <p class="welcome-text">
+                        Вы один в бесконечной тайге. Ваша задача — принять правильные решения,
+                        чтобы выжить и дождаться спасателей. Следите за тремя показателями:
+                        <strong>Здоровье</strong>, <strong>Тепло</strong> и <strong>Сытость</strong>.
+                        Если хотя бы один из них достигнет нуля — вы погибли.
+                    </p>
+                    <div class="welcome-stats-hint">
+                        <span>❤️ Здоровье</span>
+                        <span>🔥 Тепло</span>
+                        <span>🍗 Сытость</span>
+                    </div>
+                    <button class="btn-start" id="btn-start" onclick="app.startGame()">
+                        <span class="btn-icon">🏕️</span>
+                        НАЧАТЬ ВЫЖИВАНИЕ
+                    </button>
+                </div>
+
+                <!-- Карточка вопроса (скрыта до начала игры) -->
+                <div class="question-card hidden" id="question-card">
+                    <div class="question-hint-icon" id="question-hint-icon">🔥</div>
+                    <h2 class="question-text" id="question-text">
+                        Загрузка вопроса...
+                    </h2>
+
+                    <!-- Кнопки вариантов ответов -->
+                    <div class="answers-grid" id="answers-grid">
+                        <!-- Генерируется динамически через JS -->
+                    </div>
+
+                    <!-- Блок обратной связи (показывается после ответа) -->
+                    <div class="feedback-box hidden" id="feedback-box">
+                        <div class="feedback-icon" id="feedback-icon">✅</div>
+                        <p class="feedback-text" id="feedback-text"></p>
+                        <button class="btn-next hidden" id="btn-next" onclick="app.loadNextQuestion()">
+                            СЛЕДУЮЩИЙ ВОПРОС →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Экран окончания игры -->
+                <div class="game-over-screen hidden" id="game-over-screen">
+                    <div class="game-over-icon" id="game-over-icon">💀</div>
+                    <h2 class="game-over-title" id="game-over-title">Вы погибли</h2>
+                    <p class="game-over-text" id="game-over-text">
+                        Тайга оказалась сильнее...
+                    </p>
+                    <div class="final-stats" id="final-stats"></div>
+                    <button class="btn-start" onclick="app.startGame()">
+                        <span class="btn-icon">🔄</span>
+                        ПОПРОБОВАТЬ СНОВА
+                    </button>
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- ====== ПОДВАЛ ====== -->
+        <footer class="game-footer">
+            <p>🌲 Выжить в Тайге · Проект · Clean Architecture · FastAPI + Python 3.14 🌲</p>
+        </footer>
+
+    </div>
+
+    <!-- Уведомление (toast) для ошибок -->
+    <div class="toast hidden" id="toast"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
